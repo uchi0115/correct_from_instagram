@@ -2,19 +2,24 @@ import requests
 import base64
 import json
 import pprint
+import os
 import io
 import datetime
 from PIL import Image
 from urllib.parse import urlparse
+from dotenv import load_dotenv
 import mysql.connector
 
-dst_path = '/Users/chibaren/NL/Instagram_analyze/image_sample/kari.png'
+load_dotenv()
 
 def request_to_instagram(hashtag):
 
     try:
 
-        INSTAGRAM_GRAPH_API_URL = f"https://graph.facebook.com/ig_hashtag_search?user_id=17841448441684967&access_token=EAALZBv7JCX7EBANK8WFabF3IxwmRl8eLpMbPvmBj2dDUpacGVWgcR6cyJg5mEdFZBHUupGoICw7WZCBGq8qDCoigdZBYSWVaHdIFv8amooyFHDvDHURrzQKhz5RXuFXndhdiBw8S8pFFr7ZBo6eZAcLl2fRZAc36hpT1Dh9a8tr8bBcNpIrpA6q&q={hashtag}"
+        user_id = os.getenv('USER_ID_2')
+        access_token = os.getenv('ACCESS_TOKEN_2')
+
+        INSTAGRAM_GRAPH_API_URL = f"https://graph.facebook.com/ig_hashtag_search?user_id={user_id}&access_token={access_token}&q={hashtag}"
 
         # Vision API にリクエストを行う
         response1 = requests.get(INSTAGRAM_GRAPH_API_URL)
@@ -23,7 +28,7 @@ def request_to_instagram(hashtag):
         pprint.pprint(response1.json())
         hashtag_id = response1.json()['data'][0]['id']
 
-        INSTAGRAM_URL = f'https://graph.facebook.com/{hashtag_id}/top_media?user_id=17841448441684967&access_token=EAALZBv7JCX7EBANK8WFabF3IxwmRl8eLpMbPvmBj2dDUpacGVWgcR6cyJg5mEdFZBHUupGoICw7WZCBGq8qDCoigdZBYSWVaHdIFv8amooyFHDvDHURrzQKhz5RXuFXndhdiBw8S8pFFr7ZBo6eZAcLl2fRZAc36hpT1Dh9a8tr8bBcNpIrpA6q&fields=id,media_type,media_url,caption,permalink&limit=10'
+        INSTAGRAM_URL = f'https://graph.facebook.com/{hashtag_id}/top_media?user_id={user_id}&access_token={access_token}&fields=id,media_type,media_url,caption,permalink&limit=10'
         response2 = requests.get(INSTAGRAM_URL)
 
         pprint.pprint(response2.json())
